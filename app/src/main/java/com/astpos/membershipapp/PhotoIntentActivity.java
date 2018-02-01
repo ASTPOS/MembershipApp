@@ -116,6 +116,13 @@ public class PhotoIntentActivity extends Activity {
     }
 
 
+	@Override
+	public void onBackPressed() {
+		//do nothing
+//		super.onBackPressed();
+	}
+
+
 	Button.OnClickListener mTakePicSOnClickListener =
 		new Button.OnClickListener() {
 		@Override
@@ -170,8 +177,12 @@ public class PhotoIntentActivity extends Activity {
 			}
 			break;
 		} // ACTION_TAKE_VIDEO
+//		default:
+//			closePhotoActivity();
+//			break;
 		} // switch
 	}
+
 
 
 

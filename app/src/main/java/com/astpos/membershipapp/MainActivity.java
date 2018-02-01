@@ -2,7 +2,12 @@ package com.astpos.membershipapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Path;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.RequiresApi;
@@ -20,7 +25,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -38,9 +45,11 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
-    //tags
+    //tags and flags
     public static final String TAG = "ASTPOS";
     public static final String USER_SIGN = "user_email";
+    public static boolean pictureButtonClicked = false;
+    public static boolean signatureButtonClicked = false;
 
     //users variables
     private String userName;
@@ -49,10 +58,12 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout mainRelativeLayout;
     private ScrollView mainScrollLayout;
     private LinearLayout mainLinearLayout;
+    private Button pictureBtn;
+    private ImageView pictureView, signatureView;
 
     // remote server
     private static final String[] ipAddressList = {"192.168.1.238"};
-    private static final String[] fileNamesList = {"user_pic.jpg"};
+    private static final String[] fileNamesList = {"user_pic.jpg", "user_sig.png"};
     private static final String serverUser = "astpos";
     private static final String serverPass = "Amb88er275!!";
     private static final String serverStorageLocation = "/usr/local/akashi/bin/data";
@@ -67,30 +78,7 @@ public class MainActivity extends AppCompatActivity {
         mainPath = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         Log.d(TAG, "main path: " + mainPath);
 
-//        mainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
-//        mainRelativeLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                hideKeyboard(v);
-//            }
-//        });
-
-//        mainScrollLayout = (ScrollView) findViewById(R.id.mainScrallView);
-////        mainLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-////            @Override
-////            public void onFocusChange(View v, boolean hasFocus) {
-////                if (!hasFocus) {
-////                    hideKeyboard(v);
-////                }
-////            }
-////        });
-//        mainScrollLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                hideKeyboard(v);
-//            }
-//        });
-//
+        // set listener so KB hides when click anywhere else but EditText
         mainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
         mainLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,15 +87,80 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // set TextWatcher to format phone number text
         phoneEditTex = (EditText) findViewById(R.id.editTextPhone);
         CustomTextWatcher phoneTextWatcher = new CustomTextWatcher(phoneEditTex);
 //        phoneEditTex.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         phoneEditTex.addTextChangedListener(phoneTextWatcher);
         phoneEditTex.clearFocus();
 
+        // picture button
+        pictureBtn = (Button) findViewById(R.id.buttonPic);
+        pictureView = (ImageView) findViewById(R.id.imageViewPic);
+        signatureView = (ImageView) findViewById(R.id.imageViewSign);
+
+//        File picture = new File(mainPath+"/user_pic.jpg");
+//        Uri picUri = Uri.fromFile(picture);
+////        pictureBtn.setBackground(picture);
+//        pictureView.setImageURI(picUri);
+
+        updateImage();
+        hideKeyboard(getCurrentFocus());
     }
 
+
+    private void updateImage() {
+        Bitmap bitmap;
+
+        if(pictureButtonClicked) {
+            Log.d(TAG, "Update signature");
+            File picture = new File(mainPath+"/user_pic.jpg");
+
+            if(picture.exists()) {
+                bitmap = BitmapFactory.decodeFile(picture.getAbsolutePath());
+                pictureView.setImageBitmap(bitmap);
+                pictureView.setVisibility(View.VISIBLE);
+//                pictureBtn.setBackground(new BitmapDrawable(getResources(), myBitmap));
+            } else {
+                pictureView.setVisibility(View.GONE);
+            }
+        }
+        pictureButtonClicked = false;
+
+        if(signatureButtonClicked) {
+            Log.d(TAG, "Update signature");
+            File signature = new File(mainPath + "/user_sig.png");
+
+            if(signature.exists()) {
+                bitmap = BitmapFactory.decodeFile(signature.getAbsolutePath());
+                signatureView.setImageBitmap(bitmap);
+                signatureView.setVisibility(View.VISIBLE);
+            } else {
+                signatureView.setVisibility(View.GONE);
+            }
+        }
+        signatureButtonClicked = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d(TAG, "MainActivity  resumed");
+        updateImage();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        Log.d(TAG, "MainActivity  stopped");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        Log.d(TAG, "MainActivity  stopped");
+    }
 
 
     public void useSignButton(View view) {
@@ -116,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
         Intent i;
         i = new Intent(this, SignatureActivity.class);
         startActivity(i);
+
+        signatureButtonClicked = true;
     }
 
     public void usePicButton(View view) {
@@ -124,9 +179,11 @@ public class MainActivity extends AppCompatActivity {
         Intent i;
         i = new Intent(this, PhotoIntentActivity.class);
         startActivity(i);
+
+        pictureButtonClicked = true;
     }
 
-    public void useTransferButton(View view) {
+    public void useSubmitButton(View view) {
         Log.i(TAG, "Transfer button clicked");
 
         userName = phoneEditTex.getText().toString();
@@ -139,10 +196,23 @@ public class MainActivity extends AppCompatActivity {
                     String fromPath = mainPath+"/"+name;
                     String toPath = serverStorageLocation;
                     transferFile(ipAddress, fromPath, toPath, name);
+
+                    File file = new File(fromPath);
+                    if(file.exists()) {
+                        Log.d(TAG, "file: " + file.getPath() + " exists");
+                        if(file.delete()) {
+                            Log.d(TAG, "file: " + file.getName() + " deleted");
+                        }
+                    }
                 }
             }
             }
         }).start();
+
+
+        pictureButtonClicked = true;
+        signatureButtonClicked = true;
+        updateImage();
     }
 
 
