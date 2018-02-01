@@ -5,4 +5,11 @@
     <color name="colorAccent">#ae013c</color>
     <color name="canvasBackground">#ffffff</color>
 
+    <!--settings colors-->
+    <color name="primarySettings">#0c0c0d</color>
+    <color name="primaryDarkSettings">#000000</color>
+    <color name="borderLineColor">#d2d2c6</color>
+    <color name="editTextColor">#e4e4e6</color>
+    <color name="textViewColor">#9d9d9e</color>
+
 </resources>
