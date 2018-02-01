@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">MembershipApp</string>
+
+    <!--signature parameters-->
+    <string name="hint_sign">Get Signature</string>
+    <string name="sign_here_title">Sign Here</string>
+    <string name="hint_cancel">Cancel</string>
+    <string name="hint_clear">Clear</string>
+    <string name="hint_save">Accept</string>
+
+
+    <!--picture parameters-->
+    <string name="btnIntendB">Take (big) Picture</string>
+    <string name="btnIntendS">Take Picture</string>
+    <string name="btnIntendV">Take Video</string>
+    <string name="cannot">Cannot</string>
+    <string name="album_name">CameraSample</string>
+
+</resources>
+

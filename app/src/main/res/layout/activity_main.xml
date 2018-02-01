@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainLayout"
+    tools:context="com.astpos.membershipapp.MainActivity">
+
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+
+    <RelativeLayout
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <TextView
+            android:id="@+id/textViewHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome!"
+            android:layout_margin="40dp"
+            android:gravity="center"
+            android:layout_alignParentTop="true" />
+
+        <Button
+            android:id="@+id/buttonPic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take Picture"
+            android:layout_margin="40dp"
+            android:layout_below="@+id/textViewHeader"
+            android:onClick="usePicButton" />
+
+        <Button
+            android:id="@+id/buttonSign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Waiver"
+            android:layout_margin="40dp"
+            android:layout_below="@+id/buttonPic"
+            android:onClick="useSignButton" />
+
+        <EditText
+            android:id="@+id/editTextPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Member Phone Number"
+            android:inputType="phone"
+            android:digits="0,1,2,3,4,5,6,7,8,9"
+            android:maxLength="12"
+            android:gravity="center"
+            android:layout_below="@+id/buttonSign" />
+
+        <Button
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            android:id="@+id/buttonTransfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/editTextPhone"
+            android:onClick="useTransferButton"
+            />
+
+    </RelativeLayout>
+    </ScrollView>
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/textViewHeader"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Welcome!"-->
+        <!--android:layout_margin="40dp"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--/>-->
+
+    <!--<Button-->
+        <!--android:id="@+id/buttonPic"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Take Picture"-->
+        <!--android:layout_margin="40dp"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewHeader"-->
+        <!--android:onClick="usePicButton"-->
+        <!--/>-->
+
+    <!--<Button-->
+        <!--android:id="@+id/buttonSign"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Sign Waiver"-->
+        <!--android:layout_margin="40dp"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/buttonPic"-->
+        <!--android:onClick="useSignButton"-->
+        <!--/>-->
+
+    <!--<EditText-->
+        <!--android:id="@+id/editTextPhone"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="Member Phone Number"-->
+        <!--android:inputType="phone"-->
+        <!--android:digits="0,1,2,3,4,5,6,7,8,9"-->
+        <!--android:maxLength="12"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_marginTop="38dp"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/buttonSign"-->
+        <!--app:layout_constraintHorizontal_bias="1.0" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/buttonTransfer"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Submit"-->
+        <!--android:layout_margin="10dp"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/editTextPhone"-->
+        <!--android:onClick="useTransferButton"-->
+        <!--/>-->
+
+
+
+</android.support.constraint.ConstraintLayout>
