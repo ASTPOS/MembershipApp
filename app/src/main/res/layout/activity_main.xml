@@ -9,7 +9,7 @@
 
 
     <ScrollView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -19,9 +19,10 @@
 
 
     <RelativeLayout
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:gravity="center"
 
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="8dp">
@@ -31,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Welcome!"
-            android:layout_margin="40dp"
+            android:layout_margin="20dp"
             android:gravity="center"
             android:layout_alignParentTop="true" />
 
@@ -40,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Take Picture"
-            android:layout_margin="40dp"
+            android:layout_margin="20dp"
             android:layout_below="@+id/textViewHeader"
             android:onClick="usePicButton" />
 
