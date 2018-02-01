@@ -74,7 +74,7 @@
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
-                    android:textColor="@color/BorderLineColor"
+                    android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
                     android:text="@string/pinpad_ip"/>
@@ -99,7 +99,7 @@
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
-                    android:textColor="@color/BorderLineColor"
+                    android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
                     android:text="@string/transaction_name"/>
@@ -123,7 +123,7 @@
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
-                    android:textColor="@color/BorderLineColor"
+                    android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
                     android:text="@string/company_email"/>
@@ -146,7 +146,7 @@
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
-                    android:textColor="@color/BorderLineColor"
+                    android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
                     android:text="@string/company_pass"/>

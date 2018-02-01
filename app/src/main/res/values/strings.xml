@@ -16,5 +16,32 @@
     <string name="cannot">Cannot</string>
     <string name="album_name">CameraSample</string>
 
+
+    <!--settings name strings-->
+    <string name="save_text">Save</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="checkbox_text">I understand that any changes may reflect the device performance</string>
+    <string name="company_pass">Gmail Password</string>
+    <string name="company_pass_data">password</string>
+    <string name="company_email">Gmail Account</string>
+    <string name="company_email_data">myemail@gmail.com</string>
+    <string name="settings_title">Administrator Settings</string>
+    <string name="merchant_id">Merchant ID</string>
+    <string name="merchant_id_data">AST POS TEST</string>
+    <string name="pinpad_ip">Pinpad IP Address</string>
+    <string name="pinpad_ip_data">xxx.xxx.xxx.xxx</string>
+    <string name="transaction_type_check">Debit/Credit</string>
+    <string name="transaction_name">Transaction Name</string>
+    <string name="ping_result">Ping result here</string>
+
+
+
+    <!--transaction array-->
+    <!--remember to change the position numbers in constants if change the order of the array-->
+    <string-array name="transactions_arrays">
+        <item>item1</item>
+        <item>item2</item>
+    </string-array>
+
 </resources>
 
