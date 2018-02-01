@@ -18,9 +18,12 @@ import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.jcraft.jsch.Channel;
@@ -43,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private String userName;
     private EditText phoneEditTex;
     private ConstraintLayout mainLayout;
-
+    private RelativeLayout mainRelativeLayout;
+    private ScrollView mainScrollLayout;
+    private LinearLayout mainLinearLayout;
 
     // remote server
     private static final String[] ipAddressList = {"192.168.1.238"};
@@ -62,17 +67,44 @@ public class MainActivity extends AppCompatActivity {
         mainPath = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         Log.d(TAG, "main path: " + mainPath);
 
-        mainLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
-        mainLayout.setOnClickListener(new View.OnClickListener() {
+//        mainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+//        mainRelativeLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                hideKeyboard(v);
+//            }
+//        });
+
+//        mainScrollLayout = (ScrollView) findViewById(R.id.mainScrallView);
+////        mainLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+////            @Override
+////            public void onFocusChange(View v, boolean hasFocus) {
+////                if (!hasFocus) {
+////                    hideKeyboard(v);
+////                }
+////            }
+////        });
+//        mainScrollLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                hideKeyboard(v);
+//            }
+//        });
+//
+        mainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
+        mainLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideKeyboard();
+                hideKeyboard(v);
             }
         });
+
+
         phoneEditTex = (EditText) findViewById(R.id.editTextPhone);
         CustomTextWatcher phoneTextWatcher = new CustomTextWatcher(phoneEditTex);
 //        phoneEditTex.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         phoneEditTex.addTextChangedListener(phoneTextWatcher);
+        phoneEditTex.clearFocus();
 
     }
 
@@ -117,8 +149,19 @@ public class MainActivity extends AppCompatActivity {
     /**
      * hides keyboard on current page
      */
-    private void hideKeyboard() {
-        View view = this.getCurrentFocus();
+    private void hideKeyboard(View view) {
+        Log.d(TAG, "Hide soft KB" ) ;
+
+        View viewCurrent = this.getCurrentFocus();
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        if ((view == null) && (viewCurrent != null)) {
+            view = viewCurrent;
+        } else if(viewCurrent == null){ // exit if both views are null
+            return;
+        }
+
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }

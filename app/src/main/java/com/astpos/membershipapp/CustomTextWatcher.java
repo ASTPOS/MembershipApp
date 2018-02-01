@@ -38,7 +38,7 @@ public class CustomTextWatcher extends PhoneNumberFormattingTextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.i(MainActivity.TAG, "CHAR SEQ: " + s + " start: " + start + " before : " + before +  " Count: " + count);
+//        Log.i(MainActivity.TAG, "CHAR SEQ: " + s + " start: " + start + " before : " + before +  " Count: " + count);
 
         //move cursor to the end of the string
         editText.setSelection(editText.getText().length());
@@ -55,8 +55,8 @@ public class CustomTextWatcher extends PhoneNumberFormattingTextWatcher {
             if(cashAmountBuilder.length() > 3){
                 cashAmountBuilder.insert(3, '-');
             }
-            if(cashAmountBuilder.length() > 6) {
-                cashAmountBuilder.insert(6, '-');
+            if(cashAmountBuilder.length() > 7) {
+                cashAmountBuilder.insert(7, '-');
             }
 
             // load the new string to the editText box
