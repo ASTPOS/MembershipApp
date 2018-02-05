@@ -48,21 +48,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
                 <TextView
-                    android:id="@+id/merchant_id"
+                    android:id="@+id/business_name"
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
                     android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
-                    android:text="@string/merchant_id"/>
+                    android:text="@string/business_name"/>
                 <EditText
-                    android:id="@+id/merchant_id_data"
+                    android:id="@+id/business_name_data"
                     android:layout_width="@dimen/border_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders_edit"
                     android:textSize="@dimen/textview_padding"
-                    android:hint="@string/merchant_id_data"
+                    android:hint="@string/business_name_data"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding" />
             </TableRow>
@@ -70,25 +70,50 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
                 <TextView
-                    android:id="@+id/pinpad_ip"
+                    android:id="@+id/server_ip"
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
                     android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
-                    android:text="@string/pinpad_ip"/>
+                    android:text="@string/server_ip"/>
                 <EditText
-                    android:id="@+id/pinpad_ip_data"
+                    android:id="@+id/server_ip_data"
                     android:layout_width="@dimen/border_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders_edit"
                     android:textSize="@dimen/textview_padding"
                     android:inputType="numberDecimal"
                     android:digits="0123456789."
-                    android:hint="@string/pinpad_ip_data"
+                    android:hint="@string/server_ip_data"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+                <TextView
+                    android:id="@+id/server_pass"
+                    android:layout_width="@dimen/weight_width"
+                    android:layout_weight="1"
+                    android:background="@drawable/table_borders"
+                    android:textColor="@color/borderLineColor"
+                    android:gravity="center"
+                    android:padding="@dimen/textview_padding"
+                    android:text="@string/server_pass"/>
+                <EditText
+                    android:id="@+id/server_pass_data"
+                    android:layout_width="@dimen/border_width"
+                    android:layout_weight="1"
+                    android:background="@drawable/table_borders_edit"
+                    android:textSize="@dimen/textview_padding"
+                    android:inputType="textPassword"
+                    android:hint="@string/server_pass_data"
+                    android:gravity="center"
+                    android:padding="@dimen/textview_padding"
+                    />
             </TableRow>
 
             <TableRow
@@ -102,7 +127,7 @@
                     android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
-                    android:text="@string/transaction_name"/>
+                    android:text="@string/spinner_name"/>
                 <Spinner
                     android:id="@+id/transaction_name"
                     android:layout_width="@dimen/border_width"
@@ -119,22 +144,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
                 <TextView
-                    android:id="@+id/company_email_lbl"
+                    android:id="@+id/user_email_lbl"
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
                     android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
-                    android:text="@string/company_email"/>
+                    android:text="@string/user_email"/>
                 <EditText
-                    android:id="@+id/company_email"
+                    android:id="@+id/user_email"
                     android:layout_width="@dimen/border_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders_edit"
                     android:textSize="@dimen/textview_padding"
                     android:inputType="textEmailAddress"
-                    android:hint="@string/company_email_data"
+                    android:hint="@string/user_email_data"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding" />
             </TableRow>
@@ -142,22 +167,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
                 <TextView
-                    android:id="@+id/company_pass_lbl"
+                    android:id="@+id/user_pass_lbl"
                     android:layout_width="@dimen/weight_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders"
                     android:textColor="@color/borderLineColor"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding"
-                    android:text="@string/company_pass"/>
+                    android:text="@string/user_email_pass"/>
                 <EditText
-                    android:id="@+id/company_pass"
+                    android:id="@+id/user_pass"
                     android:layout_width="@dimen/border_width"
                     android:layout_weight="1"
                     android:background="@drawable/table_borders_edit"
                     android:textSize="@dimen/textview_padding"
                     android:inputType="textPassword"
-                    android:hint="@string/company_pass_data"
+                    android:hint="@string/user_pass_data"
                     android:gravity="center"
                     android:padding="@dimen/textview_padding" />
             </TableRow>

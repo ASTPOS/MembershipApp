@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#4f4f50</color>
     <color name="colorAccent">#ae013c</color>
     <color name="canvasBackground">#ffffff</color>
+    <color name="bar_text_color">#000000</color>
+
 
     <!--settings colors-->
     <color name="primarySettings">#0c0c0d</color>

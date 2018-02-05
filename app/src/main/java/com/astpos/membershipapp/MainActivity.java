@@ -2,26 +2,17 @@ package com.astpos.membershipapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
+import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.telephony.PhoneNumberUtils;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Layout;
-import android.text.Selection;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -31,8 +22,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
+import com.astpos.membershipapp.util.Constants;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -42,6 +33,8 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,15 +51,19 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout mainRelativeLayout;
     private ScrollView mainScrollLayout;
     private LinearLayout mainLinearLayout;
-    private Button pictureBtn;
+    private Button pictureBtn, settingsBtn;
     private ImageView pictureView, signatureView;
 
     // remote server
-    private static final String[] ipAddressList = {"192.168.1.238"};
-    private static final String[] fileNamesList = {"user_pic.jpg", "user_sig.png"};
-    private static final String serverUser = "astpos";
-    private static final String serverPass = "Amb88er275!!";
+    private static List<String> ipAddressList = new ArrayList<String>();
+    private static String[] fileNamesList = {"user_pic.jpg", "user_sig.png"};
+    private static String serverUser = "astpos";
+    private static String serverPass = "Amb88er275!!";
     private static final String serverStorageLocation = "/usr/local/akashi/bin/data";
+
+    // Shared Preferences
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor preferencesEditor;
 
     private File mainPath;
 
@@ -74,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        this.preferencesEditor = this.preferences.edit();
+
+//        ipAddressList.add("192.168.1.238");
+        ipAddressList.add(preferences.getString(Constants.SERVER_IP, ""));
+//        serverPass = preferences.getString(Constants.SERVER_PASS, "");
+
 
         mainPath = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         Log.d(TAG, "main path: " + mainPath);
@@ -95,14 +100,11 @@ public class MainActivity extends AppCompatActivity {
         phoneEditTex.clearFocus();
 
         // picture button
-        pictureBtn = (Button) findViewById(R.id.buttonPic);
+//        settingsBtn = (Button) findViewById(R.id.buttonSettings);
+//        pictureBtn = (Button) findViewById(R.id.buttonPic);
         pictureView = (ImageView) findViewById(R.id.imageViewPic);
         signatureView = (ImageView) findViewById(R.id.imageViewSign);
 
-//        File picture = new File(mainPath+"/user_pic.jpg");
-//        Uri picUri = Uri.fromFile(picture);
-////        pictureBtn.setBackground(picture);
-//        pictureView.setImageURI(picUri);
 
         updateImage();
         hideKeyboard(getCurrentFocus());
@@ -112,8 +114,17 @@ public class MainActivity extends AppCompatActivity {
     private void updateImage() {
         Bitmap bitmap;
 
+        //set picture and signature views
+        if(!pictureButtonClicked && !signatureButtonClicked) {
+            signatureView.setVisibility(View.GONE);
+            pictureView.setVisibility(View.GONE);
+        } else {
+            signatureView.setVisibility(View.INVISIBLE);
+            pictureView.setVisibility(View.INVISIBLE);
+        }
+
         if(pictureButtonClicked) {
-            Log.d(TAG, "Update signature");
+            Log.d(TAG, "Update picture");
             File picture = new File(mainPath+"/user_pic.jpg");
 
             if(picture.exists()) {
@@ -121,11 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 pictureView.setImageBitmap(bitmap);
                 pictureView.setVisibility(View.VISIBLE);
 //                pictureBtn.setBackground(new BitmapDrawable(getResources(), myBitmap));
-            } else {
-                pictureView.setVisibility(View.GONE);
             }
         }
-        pictureButtonClicked = false;
 
         if(signatureButtonClicked) {
             Log.d(TAG, "Update signature");
@@ -135,12 +143,70 @@ public class MainActivity extends AppCompatActivity {
                 bitmap = BitmapFactory.decodeFile(signature.getAbsolutePath());
                 signatureView.setImageBitmap(bitmap);
                 signatureView.setVisibility(View.VISIBLE);
-            } else {
-                signatureView.setVisibility(View.GONE);
             }
         }
-        signatureButtonClicked = false;
+
+        //set text field for phone
+        if(signatureButtonClicked && pictureButtonClicked) {
+            Log.d(TAG, "set focusable the phone!!!");
+            phoneEditTex.setFocusableInTouchMode(true);
+            phoneEditTex.setFocusable(true);
+            pictureButtonClicked = false;
+            signatureButtonClicked = false;
+        } else {
+            phoneEditTex.setText("");
+            hideKeyboard(getCurrentFocus());
+            phoneEditTex.setFocusableInTouchMode(false);
+            phoneEditTex.setFocusable(false);
+
+        }
     }
+
+
+    /* ************************** TOOLBAR MENU START  ******************************* */
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        //noinspection SimplifiableIfStatement
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                View view = getWindow().getCurrentFocus();
+                useSettingsButton(view);
+                return true;
+            case R.id.action_refresh:
+                pictureButtonClicked = false;
+                signatureButtonClicked = false;
+                phoneEditTex.setText("");
+                updateImage();
+                return true;
+            case R.id.action_exit:
+                finish();
+                return true;
+//            case R.id.help:
+//                _aboutWindow.show(getFragmentManager(), "AST INFO");
+//                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    /* ************************** TOOLBAR MENU END  ******************************* */
+
 
     @Override
     protected void onResume() {
@@ -183,6 +249,14 @@ public class MainActivity extends AppCompatActivity {
         pictureButtonClicked = true;
     }
 
+    public void useSettingsButton(View view) {
+        Log.i(TAG, "Settings button clicked");
+
+        Intent i;
+        i = new Intent(this, SettingsActivity.class);
+        startActivity(i);
+    }
+
     public void useSubmitButton(View view) {
         Log.i(TAG, "Transfer button clicked");
 
@@ -197,21 +271,19 @@ public class MainActivity extends AppCompatActivity {
                     String toPath = serverStorageLocation;
                     transferFile(ipAddress, fromPath, toPath, name);
 
-                    File file = new File(fromPath);
-                    if(file.exists()) {
-                        Log.d(TAG, "file: " + file.getPath() + " exists");
-                        if(file.delete()) {
-                            Log.d(TAG, "file: " + file.getName() + " deleted");
-                        }
-                    }
+//                    File file = new File(fromPath);
+//                    if(file.exists()) {
+//                        Log.d(TAG, "file: " + file.getPath() + " exists");
+//                        if(file.delete()) {
+//                            Log.d(TAG, "file: " + file.getName() + " deleted");
+//                        }
+//                    }
                 }
             }
             }
         }).start();
 
 
-        pictureButtonClicked = true;
-        signatureButtonClicked = true;
         updateImage();
     }
 

@@ -40,20 +40,13 @@ public class Constants {
 
 
     // labels for preferences constants
-    public static final String MERCHANT_ID = "merchant_id";
-    public static final String PINPAD_IP = "pinpad_ip";
-    public static final String TIP_THRESHOLD = "tip_threshold";
-    public static final String IS_DEBIT = "is_debit";
-    public static final String IS_CREDIT = "is_credit";
+    public static final String BUSINESS_NAME = "business_name";
+    public static final String SERVER_IP = "server_ip";
+    public static final String SERVER_PASS = "server_pass";
     public static final String TRANSACTION_NAME = "transaction_name";
     public static final String TRANSACTION_ID = "transaction_id";
-    public static final String DO_REBOOT = "do_reboot";
-    public static final String TRANS_IS_SUCCESS = "trans_is_success";
-    public static final String USE_PAX = "use_pax";
-    public static final String USE_NAB = "use_nab";
-    public static final String USER_EMAIL = "user_email";
-    public static final String COMPANY_EMAIL_ID = "company_email_id";
-    public static final String COMPANY_EMAIL_PASS = "company_email_pass";
+    public static final String USER_EMAIL_ID = "user_email_id";
+    public static final String USER_EMAIL_PASS = "user_email_pass";
 
 
 

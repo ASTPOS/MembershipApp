@@ -1,211 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="@color/colorPrimary"
-    >
-
-    <ScrollView
-        android:id="@+id/mainScrallView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-    <LinearLayout
-        android:id="@+id/mainLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        >
+    tools:context="com.astpos.membershipapp.MainActivity">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:onClick="useSettingsButton" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textViewHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_margin="20dp"
-            android:layout_centerHorizontal="true"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            >
-            <Button
-                android:id="@+id/buttonPic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:background="@drawable/take_picture_99"
-                android:scaleType="fitCenter"
-                android:layout_margin="20dp"
-                android:gravity="center"
-                android:layout_below="@+id/textViewHeader"
-                android:onClick="usePicButton" />
-            <ImageView
-                android:id="@+id/imageViewPic"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_below="@+id/buttonPic"
-                android:scaleType="fitCenter"
-                android:visibility="gone"
-                />
-        </LinearLayout>
+    <include layout="@layout/content_main" />
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            >
-            <Button
-                android:id="@+id/buttonSign"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:background="@drawable/sign_99"
-                android:scaleType="fitCenter"
-                android:layout_margin="20dp"
-                android:layout_below="@+id/imageViewPic"
-                android:onClick="useSignButton" />
-            <ImageView
-                android:id="@+id/imageViewSign"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_below="@+id/buttonSign"
-                android:scaleType="fitCenter"
-                android:visibility="gone"
-                />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/editTextPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Member Phone Number"
-            android:inputType="phone"
-            android:digits="0,1,2,3,4,5,6,7,8,9"
-            android:maxLength="12"
-            android:gravity="center"
-            android:layout_below="@+id/imageViewSign" />
-
-        <Button
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:id="@+id/buttonTransfer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Submit"
-            android:background="@drawable/button_green"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/editTextPhone"
-            android:onClick="useSubmitButton"
-            />
-
-    </LinearLayout>
-    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>
 
 
-</RelativeLayout>
-
-
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--<android.support.design.widget.AppBarLayout-->
 <!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:id="@+id/mainLayout"-->
-<!--tools:context="com.astpos.membershipapp.MainActivity">-->
+<!--android:layout_height="wrap_content"-->
+<!--android:theme="@style/AppTheme.AppBarOverlay">-->
 
+<!--<android.support.v7.widget.Toolbar-->
+    <!--android:id="@+id/toolbar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="?attr/actionBarSize"-->
+    <!--android:background="?attr/colorPrimary"-->
+    <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
-    <!--<TextView-->
-        <!--android:id="@+id/textViewHeader"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Welcome!"-->
-        <!--android:layout_margin="40dp"-->
-        <!--android:gravity="center"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--/>-->
-
-    <!--<Button-->
-        <!--android:id="@+id/buttonPic"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Take Picture"-->
-        <!--android:layout_margin="40dp"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/textViewHeader"-->
-        <!--android:onClick="usePicButton"-->
-        <!--/>-->
-
-    <!--<Button-->
-        <!--android:id="@+id/buttonSign"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Sign Waiver"-->
-        <!--android:layout_margin="40dp"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/buttonPic"-->
-        <!--android:onClick="useSignButton"-->
-        <!--/>-->
-
-    <!--<EditText-->
-        <!--android:id="@+id/editTextPhone"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:hint="Member Phone Number"-->
-        <!--android:inputType="phone"-->
-        <!--android:digits="0,1,2,3,4,5,6,7,8,9"-->
-        <!--android:maxLength="12"-->
-        <!--android:gravity="center"-->
-        <!--android:layout_marginTop="38dp"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/buttonSign"-->
-        <!--app:layout_constraintHorizontal_bias="1.0" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/buttonTransfer"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Submit"-->
-        <!--android:layout_margin="10dp"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/editTextPhone"-->
-        <!--android:onClick="useSubmitButton"-->
-        <!--/>-->
-<!--</android.support.constraint.ConstraintLayout>-->
-
-
-
+<!--</android.support.design.widget.AppBarLayout>-->

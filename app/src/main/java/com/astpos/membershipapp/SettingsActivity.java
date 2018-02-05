@@ -38,22 +38,16 @@ public class SettingsActivity extends Activity {
     private LinearLayout mainLayout;
     private Button saveButton, cancelButton, pingButton;
     private CheckBox checkBox;
-    private Spinner spinnerTransName, spinnerDebitCredit, spinnerProcessorType;
-    private EditText editMerchantId, editPinpadIp, editPingData, editTipThreshold,
-            editCompanyEmail, editCompanyPass;
+    private Spinner spinnerTransName;
+    private EditText editBusinessName, editServerIp, editServerPass, editPingData,
+            editUserEmail, editUserPass;
     private ProgressBar progressBar;
 
     // Shared Preferences
     private SharedPreferences preferences;
     private SharedPreferences.Editor preferencesEditor;
 
-
     private String transactionName = "";
-    private int transactionId = 0;
-    private boolean isDebit = false;
-    private boolean isCredit = false;
-    private boolean useNab = false;
-    private boolean usePax = false;
 
 
     @Override
@@ -100,49 +94,34 @@ public class SettingsActivity extends Activity {
             }
         });
 
-        editMerchantId = (EditText)findViewById(R.id.merchant_id_data);
-        editPinpadIp = (EditText)findViewById(R.id.pinpad_ip_data);
+        editBusinessName = (EditText)findViewById(R.id.business_name_data);
+        editServerIp = (EditText)findViewById(R.id.server_ip_data);
+        editServerPass = (EditText) findViewById(R.id.server_pass_data);
 //        editPingData = (EditText)findViewById(R.id.ping_data);
-        editCompanyEmail = (EditText)findViewById(R.id.company_email);
-        editCompanyPass = (EditText)findViewById(R.id.company_pass);
+        editUserEmail = (EditText)findViewById(R.id.user_email);
+        editUserPass = (EditText)findViewById(R.id.user_pass);
 
         spinnerTransName = (Spinner)findViewById(R.id.transaction_name);
 
 
-//        if(!preferences.getString(Constants.MERCHANT_ID, "").isEmpty()) {
-//            editMerchantId.setText(preferences.getString(Constants.MERCHANT_ID, ""));
-//        }
-//        if(!preferences.getString(Constants.PINPAD_IP, "").isEmpty()) {
-//            editPinpadIp.setText(preferences.getString(Constants.PINPAD_IP, ""));
-//        }
-//        if(preferences.getInt(Constants.TIP_THRESHOLD, 0) > 0) {
-//            Log.i(TAG, "is bigger than 0: " + String.valueOf(preferences.getInt(Constants.TIP_THRESHOLD, 0)));
-//            editTipThreshold.setText(String.valueOf(preferences.getInt(Constants.TIP_THRESHOLD, 0)));
-//        }
-//        if(!preferences.getString(Constants.COMPANY_EMAIL_ID, "").isEmpty()) {
-//            editCompanyEmail.setText(preferences.getString(Constants.COMPANY_EMAIL_ID, ""));
-//        }
-//        if(!preferences.getString(Constants.COMPANY_EMAIL_PASS, "").isEmpty()) {
-//            editCompanyPass.setText(preferences.getString(Constants.COMPANY_EMAIL_PASS, ""));
-//        }
-//
-//
-//        // preset if any selection previously or CREDIT by default
-//        if(preferences.getBoolean(Constants.IS_DEBIT, false)) {
-//            spinnerDebitCredit.setSelection(1);
-//        } else {
-//            spinnerDebitCredit.setSelection(0);
-//        }
-//
-//        // preset if any selection for processor or NAB by default
-//        if(preferences.getBoolean(Constants.USE_NAB, false)) {
-//            spinnerProcessorType.setSelection(0);
-//        } else {
-//            spinnerProcessorType.setSelection(1);
-//        }
-//
-//        // preset with previously chosen transaction or INIT/0 by default
-//        spinnerTransName.setSelection(preferences.getInt(Constants.TRANSACTION_ID, 0));
+        if(!preferences.getString(Constants.BUSINESS_NAME, "").isEmpty()) {
+            editBusinessName.setText(preferences.getString(Constants.BUSINESS_NAME, ""));
+        }
+        if(!preferences.getString(Constants.SERVER_IP, "").isEmpty()) {
+            editServerIp.setText(preferences.getString(Constants.SERVER_IP, ""));
+        }
+        if(!preferences.getString(Constants.SERVER_PASS, "").isEmpty()) {
+            editServerPass.setText(preferences.getString(Constants.SERVER_PASS, ""));
+        }
+        if(!preferences.getString(Constants.USER_EMAIL_ID, "").isEmpty()) {
+            editUserEmail.setText(preferences.getString(Constants.USER_EMAIL_ID, ""));
+        }
+        if(!preferences.getString(Constants.USER_EMAIL_PASS, "").isEmpty()) {
+            editUserPass.setText(preferences.getString(Constants.USER_EMAIL_PASS, ""));
+        }
+
+        // preset with previously chosen transaction or INIT/0 by default
+        spinnerTransName.setSelection(preferences.getInt(Constants.TRANSACTION_ID, 0));
     }
 
 
@@ -163,38 +142,6 @@ public class SettingsActivity extends Activity {
         });
 
 
-        //here implement Debit/Credit spinner for drop down.
-        spinnerDebitCredit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                saveTransactionType(position);
-                Log.i(TAG, "position: "+position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
-            }
-        });
-
-
-        //here implement Processor spinner for drop down.
-        spinnerProcessorType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                saveProcessorType(position);
-                Log.i(TAG, "position: "+position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
-            }
-        });
-
-
         mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,46 +150,6 @@ public class SettingsActivity extends Activity {
         });
     }
 
-    /**
-     * This method used for save the position and name corresponding to
-     * the selected spinner for transaction name.
-     * @param position
-     */
-    public void saveTransactionType(int position){
-        if(position == 0) {
-            isCredit = true;
-            isDebit = false;
-//            this.preferencesEditor.putBoolean(IS_DEBIT, true);
-        } else if(position == 1) {
-            isCredit = false;
-            isDebit = true;
-//            this.preferencesEditor.putBoolean(IS_CREDIT, true);
-        } else {
-            isCredit = false;
-            isDebit = false;
-            Log.i(TAG, "wrong trans type - check spinnerDebitCredit!");
-        }
-    }
-
-
-    /**
-     * This method used for save the position and name corresponding to
-     * the selected spinner for processor type.
-     * @param position
-     */
-    public void saveProcessorType(int position){
-        if(position == 0) {
-            useNab = true;
-            usePax = false;
-        } else if(position == 1) {
-            useNab = false;
-            usePax = true;
-        } else {
-            useNab = false;
-            usePax = false;
-            Log.i(TAG, "Wrong processor type - check spinnerProcessorType!");
-        }
-    }
 
 
 
@@ -254,38 +161,7 @@ public class SettingsActivity extends Activity {
     public void saveTransactionName(int position){
         String name = spinnerTransName.getSelectedItem().toString();
         this.transactionName = name;
-        this.transactionId = position;
     }
-
-
-    /**
-     * Saves all user preferences (user defaults) from this activity
-     */
-    public void savePreferences() {
-        this.preferencesEditor.putBoolean(Constants.IS_DEBIT, this.isDebit);
-        this.preferencesEditor.putBoolean(Constants.IS_CREDIT, this.isCredit);
-
-        this.preferencesEditor.putBoolean(Constants.USE_NAB, this.useNab);
-        this.preferencesEditor.putBoolean(Constants.USE_PAX, this.usePax);
-
-        this.preferencesEditor.putString(Constants.TRANSACTION_NAME, transactionName);
-        this.preferencesEditor.putString(Constants.MERCHANT_ID, editMerchantId.getText().toString());
-        this.preferencesEditor.putString(Constants.PINPAD_IP, editPinpadIp.getText().toString());
-        this.preferencesEditor.putString(Constants.COMPANY_EMAIL_ID, editCompanyEmail.getText().toString());
-        this.preferencesEditor.putString(Constants.COMPANY_EMAIL_PASS, editCompanyPass.getText().toString());
-
-        String tipThreshold;
-        if(editTipThreshold.getText().toString().isEmpty()) {
-            tipThreshold = "0";
-        } else {
-            tipThreshold = editTipThreshold.getText().toString();
-        }
-        this.preferencesEditor.putInt(Constants.TIP_THRESHOLD, Integer.valueOf(tipThreshold));
-        this.preferencesEditor.putInt(Constants.TRANSACTION_ID, this.transactionId);
-
-        this.preferencesEditor.apply();
-    }
-
 
 
     Button.OnClickListener onSaveButtonClick = new Button.OnClickListener() {
@@ -295,10 +171,7 @@ public class SettingsActivity extends Activity {
             if (checkBox.isChecked()){
                 savePreferences();
 //                printSharedPreferences();
-                // not opening new activity but going back to parent activity
                 finish();
-//                Intent i = new Intent(SettingsActivity.this, HomeMainActivity.class);
-//                startActivity(i);
             }
             else {
                 saveButton.setEnabled(false);
@@ -314,25 +187,10 @@ public class SettingsActivity extends Activity {
 //            printSharedPreferences();
             // not opening new activity but going back to parent activity
             finish();
-
         }
     };
 
-    Button.OnClickListener onPingButtonClick = new Button.OnClickListener() {
-        @Override
-        public  void onClick(View v) {
-            hideKeyboard();
-            Log.d(TAG, "Ping button clicked");
-            editPingData.setText(R.string.ping_result);
-            editPingData.setBackgroundColor(Color.LTGRAY);
-            editPingData.setTextColor(Color.BLACK);
-            mainLayout.setAlpha(0.3f);
-            progressBar.setVisibility(View.VISIBLE);
 
-            PingAsyncTask pingTask = new PingAsyncTask();
-            pingTask.execute(editPinpadIp.getText().toString());
-        }
-    };
 
 
     private class PingAsyncTask extends AsyncTask<String, Void, Boolean> {
@@ -418,17 +276,28 @@ public class SettingsActivity extends Activity {
     }
 
 
+
+
+    /**
+     * Saves all user preferences (user defaults) from this activity
+     */
+    public void savePreferences() {
+        this.preferencesEditor.putString(Constants.TRANSACTION_NAME, transactionName);
+        this.preferencesEditor.putString(Constants.BUSINESS_NAME, editBusinessName.getText().toString());
+        this.preferencesEditor.putString(Constants.SERVER_IP, editServerIp.getText().toString());
+        this.preferencesEditor.putString(Constants.SERVER_PASS, editServerPass.getText().toString());
+        this.preferencesEditor.putString(Constants.USER_EMAIL_ID, editUserEmail.getText().toString());
+        this.preferencesEditor.putString(Constants.USER_EMAIL_PASS, editUserPass.getText().toString());
+
+        this.preferencesEditor.apply();
+    }
+
     private void printSharedPreferences() {
         Log.i(TAG, "============ PREFERENCES ===========");
-        Log.i(TAG, Constants.USE_NAB + ": " + preferences.getBoolean(Constants.USE_NAB, false));
-        Log.i(TAG, Constants.USE_PAX + ": " + preferences.getBoolean(Constants.USE_PAX, false));
-        Log.i(TAG, Constants.MERCHANT_ID + ": " + preferences.getString(Constants.MERCHANT_ID, ""));
-        Log.i(TAG, Constants.PINPAD_IP + ": " + preferences.getString(Constants.PINPAD_IP, ""));
-        Log.i(TAG, Constants.IS_DEBIT + ": " + preferences.getBoolean(Constants.IS_DEBIT, false));
-        Log.i(TAG, Constants.IS_CREDIT + ": " + preferences.getBoolean(Constants.IS_CREDIT, false));
+        Log.i(TAG, Constants.BUSINESS_NAME + ": " + preferences.getString(Constants.BUSINESS_NAME, ""));
+        Log.i(TAG, Constants.SERVER_IP + ": " + preferences.getString(Constants.SERVER_IP, ""));
+        Log.i(TAG, Constants.SERVER_PASS + ": " + preferences.getString(Constants.SERVER_PASS, ""));
         Log.i(TAG, Constants.TRANSACTION_NAME + ": " + preferences.getString(Constants.TRANSACTION_NAME, ""));
-        Log.i(TAG, Constants.TRANSACTION_ID + ": " + preferences.getInt(Constants.TRANSACTION_ID, 0));
-        Log.i(TAG, Constants.TIP_THRESHOLD + ": " + preferences.getInt(Constants.TIP_THRESHOLD, 0));
         Log.i(TAG, "====================================");
     }
 }
