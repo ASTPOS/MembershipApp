@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
@@ -23,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import com.astpos.membershipapp.util.Constants;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -36,13 +36,20 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.astpos.membershipapp.util.Constants;
+
+
 public class MainActivity extends AppCompatActivity {
 
     //tags and flags
-    public static final String TAG = "ASTPOS";
-    public static final String USER_SIGN = "user_email";
-    public static boolean pictureButtonClicked = false;
-    public static boolean signatureButtonClicked = false;
+    private static final String TAG = Constants.TAG;
+    private static boolean pictureButtonClicked = false;
+    private static boolean signatureButtonClicked = false;
+    private int ERROR_TYPE;
+    private String ERROR_MSG;
+
+    // pop up message
+    private AstDialogFragment dialogFragment;
 
     //users variables
     private String userName;
@@ -55,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView pictureView, signatureView;
 
     // remote server
-    private static List<String> ipAddressList = new ArrayList<String>();
+    private List<String> ipAddressList = new ArrayList<String>();
     private static String[] fileNamesList = {"user_pic.jpg", "user_sig.png"};
     private static String serverUser = "astpos";
     private static String serverPass = "Amb88er275!!";
@@ -70,15 +77,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //init all
         setContentView(R.layout.activity_main);
 
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         this.preferencesEditor = this.preferences.edit();
 
-//        ipAddressList.add("192.168.1.238");
-        ipAddressList.add(preferences.getString(Constants.SERVER_IP, ""));
-//        serverPass = preferences.getString(Constants.SERVER_PASS, "");
+        //initialize fragment for any popup msgs that may appear
+        dialogFragment = new AstDialogFragment();
 
+//        updatePreferences();
 
         mainPath = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         Log.d(TAG, "main path: " + mainPath);
@@ -108,6 +117,16 @@ public class MainActivity extends AppCompatActivity {
 
         updateImage();
         hideKeyboard(getCurrentFocus());
+    }
+
+
+    private void updatePreferences() {
+        ipAddressList.clear();
+        //        ipAddressList.add("192.168.1.238");
+        ipAddressList.add(preferences.getString(Constants.SERVER_IP, ""));
+        serverPass = preferences.getString(Constants.SERVER_PASS, "");
+
+        Log.d(TAG, "IP ARR Size: " + ipAddressList.size());
     }
 
 
@@ -196,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 updateImage();
                 return true;
             case R.id.action_exit:
-                finish();
+                closeActivity();
                 return true;
 //            case R.id.help:
 //                _aboutWindow.show(getFragmentManager(), "AST INFO");
@@ -214,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "MainActivity  resumed");
         updateImage();
+        updatePreferences();
     }
 
     @Override
@@ -264,13 +284,35 @@ public class MainActivity extends AppCompatActivity {
 
         new Thread(new Runnable() {
             public void run() {
+            TransferAsyncTask transferTask;
+
             for(String ipAddress : ipAddressList) {
 //                Log.d(TAG, "Start transferring to IP: " + ipAddress);
                 for(String name : fileNamesList) {
+//                    //using async
+//                    transferTask = new TransferAsyncTask();
+//                    transferTask.execute(ipAddress, name);
+
+                    //using runnable
                     String fromPath = mainPath+"/"+name;
                     String toPath = serverStorageLocation;
-                    transferFile(ipAddress, fromPath, toPath, name);
+                    try {
+                        transferFile(ipAddress, fromPath, toPath, name);
+                        ERROR_MSG = getString(R.string.updated);
+                    } catch (JSchException e) {
+                        ERROR_TYPE = Constants.CONNECTION_ERR;
+                        ERROR_MSG = e.getMessage().toString();
+                        e.printStackTrace();
+                        Log.e(TAG, "JSch: "+e.toString());
+                        break;
+                    } catch (SftpException e) {
+                        ERROR_TYPE = Constants.TIMEOUT_ERR;
+                        e.printStackTrace();
+                        Log.e(TAG, "Sftp: "+e.toString());
+                        break;
+                    }
 
+                    // //////delete a file if exists //////
 //                    File file = new File(fromPath);
 //                    if(file.exists()) {
 //                        Log.d(TAG, "file: " + file.getPath() + " exists");
@@ -280,12 +322,36 @@ public class MainActivity extends AppCompatActivity {
 //                    }
                 }
             }
+            createDialog(ERROR_MSG, ERROR_TYPE, "successfulTransferMsg");
+
             }
         }).start();
 
 
         updateImage();
     }
+
+
+
+    /**
+     * Builds a dialog fragment and displays it in the current activity
+     * @param errorMessage to be displayed in the dialog
+     * @param errorType chosen from Constants triggers different dialog
+     * @param errorId standard required char ID for the Dialog
+     */
+    public void createDialog(String errorMessage, int errorType, String errorId){
+        Bundle args = new Bundle();
+        args.putString(Constants.ERROR_MSG, errorMessage);
+        args.putInt(Constants.ERROR_TYPE, errorType);
+        if((dialogFragment.getDialog() != null) && (dialogFragment.getDialog().isShowing())) {
+            dialogFragment.dismiss();
+            dialogFragment = new AstDialogFragment();
+        }
+        dialogFragment.setArguments(args);
+        dialogFragment.setCancelable(false);
+        dialogFragment.show(getFragmentManager(), errorId);
+    }
+
 
 
     /**
@@ -310,24 +376,75 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
+     * closes current activity
+     */
+    public void closeActivity(){
+        finish();
+    }
+
+
+//do not need it
+    private class TransferAsyncTask extends AsyncTask<String, Void, String>{
+
+        private String errorMessage;
+        private int errorType;
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            String ipAddress = params[0];
+            String name = params[1];
+            String fromPath = mainPath+"/"+name;
+            String toPath = serverStorageLocation;
+            try {
+                transferFile(ipAddress, fromPath, toPath, name);
+                errorMessage = getString(R.string.updated);
+
+            } catch (JSchException e) {
+                ERROR_TYPE = Constants.CONNECTION_ERR;
+                errorMessage = e.toString();
+                e.printStackTrace();
+                Log.e(TAG, e.toString());
+            } catch (SftpException e) {
+                ERROR_TYPE = Constants.TIMEOUT_ERR;
+                errorMessage = e.toString();
+                e.printStackTrace();
+                Log.e(TAG, e.toString());
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String string){
+            createDialog(errorMessage, ERROR_TYPE, "transferErrorMsg");
+
+        }
+    }
+
+
+    /**
      * Transfers a specified file to a specific location on requested IP address
      * @param ipAddress IP address where to send file
      * @param from String path of location to copy on local host
      * @param to String path of location to store on remote host
      * @param fileName name of file to copy
      */
-    private void transferFile(String ipAddress, String from, String to, String fileName) {
+    private void transferFile(String ipAddress, String from, String to, String fileName)
+            throws JSchException, SftpException {
         // find file
         File file = new File(from);
 
         Log.d(TAG, " ========= TRANSFER LOG ============");
+        Log.d(TAG, "ip address    : " + ipAddress);
         Log.d(TAG, "file name     : " + file.getName());
         Log.d(TAG, "file local path   : " + file.getPath());
 
         JSch jsch = new JSch();
         Session session;
-        try {
+//        try {
             session = jsch.getSession(serverUser, ipAddress, 22);
+            session.setTimeout(5000);
 
             session.setConfig("StrictHostKeyChecking", "no");
             session.setPassword(serverPass);
@@ -374,14 +491,19 @@ public class MainActivity extends AppCompatActivity {
 
             channelSftp.exit();
             session.disconnect();
-        } catch (JSchException e) {
-            e.printStackTrace();
-            Log.e(TAG, e.toString());
-        } catch (SftpException e) {
-            e.printStackTrace();
-            Log.e(TAG, e.toString());
-        }
 
+            ERROR_TYPE = Constants.TRANSFER_SUCCESS;
+//        }
+
+//        catch (JSchException e) {
+//            ERROR_TYPE = Constants.CONNECTION_ERR;
+//            e.printStackTrace();
+//            Log.e(TAG, e.toString());
+//        } catch (SftpException e) {
+//            ERROR_TYPE = Constants.TIMEOUT_ERR;
+//            e.printStackTrace();
+//            Log.e(TAG, e.toString());
+//        }
     }
 
 

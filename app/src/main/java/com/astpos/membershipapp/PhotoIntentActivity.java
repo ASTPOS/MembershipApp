@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.astpos.membershipapp.MainActivity.TAG;
+import static com.astpos.membershipapp.util.Constants.TAG;
 
 
 public class PhotoIntentActivity extends Activity {

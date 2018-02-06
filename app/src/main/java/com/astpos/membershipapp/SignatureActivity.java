@@ -26,13 +26,15 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
+import com.astpos.membershipapp.util.Constants;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static android.content.ContentValues.TAG;
+import static com.astpos.membershipapp.util.Constants.TAG;
 
 
 /**
@@ -57,7 +59,6 @@ public class SignatureActivity extends Activity {
     private String pic_name ;
     private String StoredPath;
 
-    private static String TAG = MainActivity.TAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class SignatureActivity extends Activity {
 
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         this.preferencesEditor = preferences.edit();
-        preferencesEditor.putString(MainActivity.USER_SIGN, StoredPath);
+        preferencesEditor.putString(Constants.USER_SIGN_PATH, StoredPath);
         preferencesEditor.apply();
 
         mContent = (LinearLayout) findViewById(R.id.canvasLayout);
@@ -134,7 +135,7 @@ public class SignatureActivity extends Activity {
                 finish();
 
             } else if(v == buttonCancel){
-                Log.v(MainActivity.TAG, "Panel Canceled");
+                Log.v(TAG, "Panel Canceled");
                 finish();
             }
         }
@@ -229,7 +230,7 @@ public class SignatureActivity extends Activity {
         }
 
         public void save(View v, String storedPath) {
-            Log.d(MainActivity.TAG, "Store image path: " + storedPath);
+            Log.d(TAG, "Store image path: " + storedPath);
             //Log.d(Constants.TAG, "Width: " + v.getWidth());
             //Log.d(Constants.TAG, "Height: " + v.getHeight());
             if (bitmap == null) {
@@ -249,7 +250,7 @@ public class SignatureActivity extends Activity {
                 mFileOutStream.close();
 
             } catch (Exception e) {
-                Log.v(MainActivity.TAG, e.toString());
+                Log.v(TAG, e.toString());
             }
 
         }
@@ -310,7 +311,7 @@ public class SignatureActivity extends Activity {
         }
 
         private void debug(String string) {
-            Log.v(MainActivity.TAG, string);
+            Log.v(TAG, string);
         }
 
         private void expandDirtyRect(float historicalX, float historicalY) {

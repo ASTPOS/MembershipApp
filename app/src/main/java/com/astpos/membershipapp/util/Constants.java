@@ -15,11 +15,10 @@ public class Constants {
     public static final String APPROVED_MSG = "error_msg";
     public static final String ERROR_MSG = "error_msg";
     public static final String ERROR_TYPE = "error_type";
-    public static final int APPROVED_TRANS = 100;
+    public static final int TRANSFER_SUCCESS = 100;
     public static final int TIMEOUT_ERR    = 101;
     public static final int CANCELED_ERR   = 102;
     public static final int DECLINED_ERR   = 103;
-    public static final int TIP_LARGE_ERR  = 104;
     public static final int CONNECTION_ERR = 105;
     public static final int COLLECT_EMAIL  = 106;
 
@@ -47,7 +46,7 @@ public class Constants {
     public static final String TRANSACTION_ID = "transaction_id";
     public static final String USER_EMAIL_ID = "user_email_id";
     public static final String USER_EMAIL_PASS = "user_email_pass";
-
+    public static final String USER_SIGN_PATH = "user_signature_PATH";
 
 
     //extras for PaxPinpadActivity
