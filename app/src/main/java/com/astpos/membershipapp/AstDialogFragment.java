@@ -134,6 +134,12 @@ public class AstDialogFragment extends DialogFragment {
 //            });
         }
 
+        if(errorType == Constants.WRONG_PHONE) {
+            builder.setMessage("Wrong phone: " + errorMsg +
+                    "\n"+ getString(R.string.reenter_phone) );
+        }
+
+
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
 

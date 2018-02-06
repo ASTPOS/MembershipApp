@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">Memebership</string>
+    <string name="app_name">AST Membership</string>
+
+    <!--main activity strings-->
+    <string name="header_info">"Please take a picture, sign for the waiver form, and press submit!"</string>
 
     <!--signature parameters-->
     <string name="hint_sign">Get Signature</string>
@@ -53,6 +56,7 @@
     <string name="updated">Updated!</string>
     <string name="time_out_prompt">Please check connectivity</string>
     <string name="connection_err">Connection error</string>
+    <string name="reenter_phone">Please enter phone number!</string>
 
 
 </resources>

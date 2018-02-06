@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "MainActivity  resumed");
         updateImage();
+        hideKeyboard(null);
         updatePreferences();
     }
 
@@ -281,6 +282,12 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Transfer button clicked");
 
         userName = phoneEditTex.getText().toString();
+        if(userName.length() != 12){
+            ERROR_TYPE = Constants.WRONG_PHONE;
+            ERROR_MSG = userName;
+            createDialog(ERROR_MSG, ERROR_TYPE, "wrongPhoneMsg");
+            return;
+        }
 
         new Thread(new Runnable() {
             public void run() {
@@ -367,7 +374,8 @@ public class MainActivity extends AppCompatActivity {
         if ((view == null) && (viewCurrent != null)) {
             view = viewCurrent;
         } else if(viewCurrent == null){ // exit if both views are null
-            return;
+            Log.d(TAG, "VIEW IS NULL");
+            view = new View(this);
         }
 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);

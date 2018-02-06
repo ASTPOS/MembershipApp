@@ -17,7 +17,7 @@ public class Constants {
     public static final String ERROR_TYPE = "error_type";
     public static final int TRANSFER_SUCCESS = 100;
     public static final int TIMEOUT_ERR    = 101;
-    public static final int CANCELED_ERR   = 102;
+    public static final int WRONG_PHONE   = 102;
     public static final int DECLINED_ERR   = 103;
     public static final int CONNECTION_ERR = 105;
     public static final int COLLECT_EMAIL  = 106;
