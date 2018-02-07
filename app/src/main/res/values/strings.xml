@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">AST Membership</string>
+    <string name="app_name">AST Stella</string>
 
     <!--main activity strings-->
-    <string name="header_info">"Please take a picture, sign for the waiver form, and press submit!"</string>
+    <string name="header_info">"1: Take picture 2: Sign waiver 3: Submit!"</string>
+    <string name="footer_info">"www.astpos.com © 2018"</string>
+
 
     <!--signature parameters-->
     <string name="hint_sign">Get Signature</string>
@@ -35,13 +37,13 @@
     <string name="server_ip_data">xxx.xxx.xxx.xxx</string>
     <string name="server_pass">Server Password</string>
     <string name="server_pass_data">password</string>
-    <string name="spinner_name">Item ID</string>
+    <string name="spinner_name">Waiver Template</string>
 
 
     <!--transaction array-->
     <string-array name="transactions_arrays">
-        <item>item1</item>
-        <item>item2</item>
+        <item>Waiver 1*</item>
+        <item>Waiver 2*</item>
     </string-array>
     <string name="title_activity_main2">Main2Activity</string>
 
@@ -58,7 +60,7 @@
     <string name="connection_err">Connection error</string>
     <string name="reenter_phone">Please enter phone number!</string>
     <string name="complete_form">Please complete form: take a picture and sign waver!</string>
-
+    <string name="wrong_pass">Wrong Password. Please try again!</string>
 
 </resources>
 

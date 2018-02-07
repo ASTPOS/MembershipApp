@@ -1,6 +1,9 @@
 package com.astpos.membershipapp;
 
+import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -8,9 +11,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -34,6 +40,8 @@ import java.util.List;
 
 import com.astpos.membershipapp.util.Constants;
 
+import static java.lang.System.exit;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private AstDialogFragment dialogFragment;
 
     //users variables
+    private ActionBar actionBar;
     private String userName;
     private EditText phoneEditText;
     private LinearLayout mainLinearLayout;
@@ -58,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private static String[] fileNamesList = {"user_pic.jpg", "user_sig.png"};
     private static String serverUser = "astpos";
     private static String serverPass = "Amb88er275!!";
+    final private String adminPass = "5990";
     private static final String serverStorageLocation = "/usr/local/akashi/bin/data";
 
     // Shared Preferences
@@ -79,10 +89,13 @@ public class MainActivity extends AppCompatActivity {
         //initialize fragment for any popup msgs that may appear
         dialogFragment = new AstDialogFragment();
 
-//        updatePreferences();
-
         mainPath = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         Log.d(TAG, "main path: " + mainPath);
+
+
+        // set actionbar
+        setActionBar();
+
 
         // set listener so KB hides when click anywhere else but EditText
         mainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
@@ -117,6 +130,20 @@ public class MainActivity extends AppCompatActivity {
 
         updateImage();
         hideKeyboard(getCurrentFocus());
+    }
+
+
+    private void setActionBar() {
+        actionBar = getSupportActionBar();
+        String actionBarTitle = getString(R.string.app_name); //actionBar.getTitle().toString();
+        String businessName = preferences.getString(Constants.BUSINESS_NAME, "");
+        actionBarTitle = actionBarTitle + "\t\t\t\t\t\t" + businessName;
+        actionBar.setTitle(actionBarTitle);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setIcon(R.mipmap.ic_launcher_round);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setSubtitle("TEST");
+        Log.d(TAG, "Title: " + actionBarTitle);
     }
 
 
@@ -206,8 +233,9 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
             case R.id.action_settings:
-                View view = getWindow().getCurrentFocus();
-                useSettingsButton(view);
+                askForPassword("SettingsActivity");
+//                View view = getWindow().getCurrentFocus();
+//                useSettingsButton(view);
                 return true;
             case R.id.action_refresh:
                 pictureButtonClicked = false;
@@ -216,11 +244,9 @@ public class MainActivity extends AppCompatActivity {
                 updateImage();
                 return true;
             case R.id.action_exit:
-                closeActivity();
+                askForPassword("");
+//                closeActivity();
                 return true;
-//            case R.id.help:
-//                _aboutWindow.show(getFragmentManager(), "AST INFO");
-//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -233,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         Log.d(TAG, "MainActivity  resumed");
+        setActionBar();
         updateImage();
         hideKeyboard(null);
         updatePreferences();
@@ -498,6 +525,100 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // ///////////////////// Start ASK for PASS //////////////////////////////////////
+    /**
+     *  Takes the name of the Class to be loaded as a string and asks for password
+     * (which is hardcoded for this class) before loading the requested class
+     * @params className is the string name of requested class (omit .class)
+    **/
+    private void askForPassword(String className) {
+
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from(this);
+        View promptsView = li.inflate(R.layout.check_pass, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set prompts.xml to alertDialog builder
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput);
+        final Class<?> classToLoad;
+        String PACKAGE_NAME = getApplication().getPackageName(); //"com.astposaura.Ambient_Kiosk."
+
+
+        Class<?> tempClass;
+        try {
+            tempClass = Class.forName(PACKAGE_NAME + "." + className);
+        } catch (ClassNotFoundException e) {
+            tempClass = null;
+            e.printStackTrace();
+        }
+        classToLoad = tempClass;
+
+        // set dialog message
+        alertDialogBuilder
+            .setCancelable(false)
+            .setTitle("! ADMIN USE ONLY !")
+            .setMessage("Press Cancel If Not Admin")
+            .setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // get user input and if correct allow access to setting
+                        String password = String.valueOf(userInput.getText());
+
+                        if(password.equals(adminPass)) {
+                            if(classToLoad == null){
+                                exit(0);
+                            }
+
+                            Intent i = new Intent();
+                            i.setComponent(new ComponentName(MainActivity.this, classToLoad)); //Preferences.class
+                            startActivity(i);
+                        } else {
+                            showAlertDialog(getString(R.string.app_name),
+                                    getString(R.string.wrong_pass));
+                        }
+                    }
+                })
+            .setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        })
+        ;
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+    public void showAlertDialog(String title, String msg) {
+        //Log.i("EPIC LOG","CAME IN SHOW MSG DIALOG");
+        View wrongPassView =  LayoutInflater.from(this).inflate(R.layout.wrong_pass, null);
+        final TextView textView = (TextView) wrongPassView.findViewById(R.id.textViewMsg);
+        textView.setText(msg);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        builder.setView(wrongPassView);
+        // in order to inflate view as we go, but we have to edit it so we use the above
+        //builder.setView(LayoutInflater.from(this).inflate(R.layout.wrong_pass, null));
+
+        AlertDialog alert = builder.create();
+        alert.setInverseBackgroundForced(true);
+        alert.show();
+    }
+    // ///////////////////// End ASK for PASS //////////////////////////////////////
 
 
 }
