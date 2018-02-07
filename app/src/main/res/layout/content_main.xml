@@ -18,10 +18,8 @@
         android:id="@+id/mainScrallView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTintMode="multiply"
-        android:backgroundTint="@color/colorBlue"
-        android:background="@drawable/ast_background"
 
+        android:background="@drawable/ast_background"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 

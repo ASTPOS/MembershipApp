@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     //users variables
     private ActionBar actionBar;
+    private MenuItem menuItemTitle;
     private String userName;
     private EditText phoneEditText;
     private LinearLayout mainLinearLayout;
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set TextWatcher to format phone number text
         phoneEditText = (EditText) findViewById(R.id.editTextPhone);
-        CustomTextWatcher phoneTextWatcher = new CustomTextWatcher(phoneEditText);
+        final CustomTextWatcher phoneTextWatcher = new CustomTextWatcher(phoneEditText);
         phoneEditText.addTextChangedListener(phoneTextWatcher);
         phoneEditText.clearFocus();
         phoneEditText.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Clicked on phone edit");
                 ERROR_MSG = "Incomplete Form!";
                 ERROR_TYPE = Constants.INCOMPLETE_ERR;
+
+                Log.d(TAG, "Pic: " + pictureButtonClicked + " Sig: " + signatureButtonClicked);
+                if(!pictureButtonClicked || !signatureButtonClicked)
                 createDialog(ERROR_MSG, ERROR_TYPE, "incompleteErr");
             }
         });
@@ -136,13 +140,17 @@ public class MainActivity extends AppCompatActivity {
     private void setActionBar() {
         actionBar = getSupportActionBar();
         String actionBarTitle = getString(R.string.app_name); //actionBar.getTitle().toString();
-        String businessName = preferences.getString(Constants.BUSINESS_NAME, "");
-        actionBarTitle = actionBarTitle + "\t\t\t\t\t\t" + businessName;
-        actionBar.setTitle(actionBarTitle);
+//        String businessName = preferences.getString(Constants.BUSINESS_NAME, "");
+//        actionBarTitle = actionBarTitle + "\t\t\t\t\t\t" + businessName;
+//        actionBar.setTitle(actionBarTitle);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setIcon(R.mipmap.ic_launcher_round);
         actionBar.setDisplayShowTitleEnabled(true);
+
+
         actionBar.setSubtitle("TEST");
+
+
         Log.d(TAG, "Title: " + actionBarTitle);
     }
 
@@ -198,8 +206,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "set focusable the phone!!!");
             phoneEditText.setFocusableInTouchMode(true);
             phoneEditText.setFocusable(true);
-            pictureButtonClicked = false;
-            signatureButtonClicked = false;
+//            pictureButtonClicked = false;
+//            signatureButtonClicked = false;
         } else {
             phoneEditText.setText("");
             hideKeyboard(getCurrentFocus());
@@ -225,6 +233,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        menuItemTitle = menu.findItem(R.id.action_title);
+        String businessName = preferences.getString(Constants.BUSINESS_NAME, "");
+        menuItemTitle.setTitle(businessName);
+
+        return  super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -244,8 +261,8 @@ public class MainActivity extends AppCompatActivity {
                 updateImage();
                 return true;
             case R.id.action_exit:
-                askForPassword("");
-//                closeActivity();
+//                askForPassword("");
+                closeActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
