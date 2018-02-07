@@ -61,6 +61,7 @@
     <string name="reenter_phone">Please enter phone number!</string>
     <string name="complete_form">Please complete form: take a picture and sign waver!</string>
     <string name="wrong_pass">Wrong Password. Please try again!</string>
+    <string name="type_pass">Type Your Password : </string>
 
 </resources>
 

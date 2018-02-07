@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView pictureView, signatureView;
 
     // remote server
-    private List<String> ipAddressList = new ArrayList<String>();
+    private List<String> ipAddressList = new ArrayList<>();
     private static String[] fileNamesList = {"user_pic.jpg", "user_sig.png"};
     private static String serverUser = "astpos";
     private static String serverPass = "Amb88er275!!";
@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         this.preferencesEditor = this.preferences.edit();
+        this.preferencesEditor.apply();
 
         //initialize fragment for any popup msgs that may appear
         dialogFragment = new AstDialogFragment();
@@ -206,8 +207,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "set focusable the phone!!!");
             phoneEditText.setFocusableInTouchMode(true);
             phoneEditText.setFocusable(true);
-//            pictureButtonClicked = false;
-//            signatureButtonClicked = false;
         } else {
             phoneEditText.setText("");
             hideKeyboard(getCurrentFocus());
@@ -353,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                         ERROR_MSG = getString(R.string.updated);
                     } catch (JSchException e) {
                         ERROR_TYPE = Constants.CONNECTION_ERR;
-                        ERROR_MSG = e.getMessage().toString();
+                        ERROR_MSG = e.toString();
                         e.printStackTrace();
                         Log.e(TAG, "JSch: "+e.toString());
                         break;
@@ -371,6 +370,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+        pictureButtonClicked = false;
+        signatureButtonClicked = false;
         updateImage();
     }
 
@@ -544,10 +545,10 @@ public class MainActivity extends AppCompatActivity {
 
     // ///////////////////// Start ASK for PASS //////////////////////////////////////
     /**
-     *  Takes the name of the Class to be loaded as a string and asks for password
+     * Takes the name of the Class to be loaded as a string and asks for password
      * (which is hardcoded for this class) before loading the requested class
-     * @params className is the string name of requested class (omit .class)
-    **/
+     * @param className  is the string name of requested class (omit .class)
+     */
     private void askForPassword(String className) {
 
         // get prompts.xml view
@@ -559,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
         // set prompts.xml to alertDialog builder
         alertDialogBuilder.setView(promptsView);
 
-        final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput);
+        final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextInput);
         final Class<?> classToLoad;
         String PACKAGE_NAME = getApplication().getPackageName(); //"com.astposaura.Ambient_Kiosk."
 
