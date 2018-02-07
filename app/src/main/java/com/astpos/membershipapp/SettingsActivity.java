@@ -260,6 +260,7 @@ public class SettingsActivity extends Activity {
 
     @Override
     protected void onStop() {
+        hideKeyboard();
         super.onStop();
         Log.i(TAG, "Settings activity stopped");
         printSharedPreferences();
@@ -271,6 +272,8 @@ public class SettingsActivity extends Activity {
      */
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
+        view.clearFocus();
+
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }

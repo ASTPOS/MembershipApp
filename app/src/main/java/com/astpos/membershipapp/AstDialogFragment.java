@@ -42,6 +42,7 @@ public class AstDialogFragment extends DialogFragment {
                         // OK to close
                     }
                 })
+
         ;
 
         if(errorMsg == null) {
@@ -122,7 +123,6 @@ public class AstDialogFragment extends DialogFragment {
             builder.setMessage(getString(R.string.time_out_prompt) + ": \n" + errorMsg);
         }
 
-
         if(errorType == Constants.CONNECTION_ERR) {
             errorMsg = getString(R.string.time_out_prompt);
             builder.setMessage(getString(R.string.connection_err) + ": \n" + errorMsg);
@@ -139,6 +139,10 @@ public class AstDialogFragment extends DialogFragment {
                     "\n"+ getString(R.string.reenter_phone) );
         }
 
+        if(errorType == Constants.INCOMPLETE_ERR) {
+            builder.setMessage(errorMsg +
+                    "\n"+ getString(R.string.complete_form) );
+        }
 
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);

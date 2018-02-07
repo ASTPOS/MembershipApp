@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,12 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -53,12 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     //users variables
     private String userName;
-    private EditText phoneEditTex;
-    private ConstraintLayout mainLayout;
-    private RelativeLayout mainRelativeLayout;
-    private ScrollView mainScrollLayout;
+    private EditText phoneEditText;
     private LinearLayout mainLinearLayout;
-    private Button pictureBtn, settingsBtn;
     private ImageView pictureView, signatureView;
 
     // remote server
@@ -102,11 +94,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // set TextWatcher to format phone number text
-        phoneEditTex = (EditText) findViewById(R.id.editTextPhone);
-        CustomTextWatcher phoneTextWatcher = new CustomTextWatcher(phoneEditTex);
-//        phoneEditTex.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-        phoneEditTex.addTextChangedListener(phoneTextWatcher);
-        phoneEditTex.clearFocus();
+        phoneEditText = (EditText) findViewById(R.id.editTextPhone);
+        CustomTextWatcher phoneTextWatcher = new CustomTextWatcher(phoneEditText);
+        phoneEditText.addTextChangedListener(phoneTextWatcher);
+        phoneEditText.clearFocus();
+        phoneEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Clicked on phone edit");
+                ERROR_MSG = "Incomplete Form!";
+                ERROR_TYPE = Constants.INCOMPLETE_ERR;
+                createDialog(ERROR_MSG, ERROR_TYPE, "incompleteErr");
+            }
+        });
 
         // picture button
 //        settingsBtn = (Button) findViewById(R.id.buttonSettings);
@@ -150,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
                 bitmap = BitmapFactory.decodeFile(picture.getAbsolutePath());
                 pictureView.setImageBitmap(bitmap);
                 pictureView.setVisibility(View.VISIBLE);
-//                pictureBtn.setBackground(new BitmapDrawable(getResources(), myBitmap));
+                // set the button with bitmap image
+                //pictureBtn.setBackground(new BitmapDrawable(getResources(), myBitmap));
             }
         }
 
@@ -168,15 +169,15 @@ public class MainActivity extends AppCompatActivity {
         //set text field for phone
         if(signatureButtonClicked && pictureButtonClicked) {
             Log.d(TAG, "set focusable the phone!!!");
-            phoneEditTex.setFocusableInTouchMode(true);
-            phoneEditTex.setFocusable(true);
+            phoneEditText.setFocusableInTouchMode(true);
+            phoneEditText.setFocusable(true);
             pictureButtonClicked = false;
             signatureButtonClicked = false;
         } else {
-            phoneEditTex.setText("");
+            phoneEditText.setText("");
             hideKeyboard(getCurrentFocus());
-            phoneEditTex.setFocusableInTouchMode(false);
-            phoneEditTex.setFocusable(false);
+            phoneEditText.setFocusableInTouchMode(false);
+            phoneEditText.setFocusable(false);
 
         }
     }
@@ -211,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_refresh:
                 pictureButtonClicked = false;
                 signatureButtonClicked = false;
-                phoneEditTex.setText("");
+                phoneEditText.setText("");
                 updateImage();
                 return true;
             case R.id.action_exit:
@@ -281,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
     public void useSubmitButton(View view) {
         Log.i(TAG, "Transfer button clicked");
 
-        userName = phoneEditTex.getText().toString();
+        userName = phoneEditText.getText().toString();
         if(userName.length() != 12){
             ERROR_TYPE = Constants.WRONG_PHONE;
             ERROR_MSG = userName;
@@ -291,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
 
         new Thread(new Runnable() {
             public void run() {
-            TransferAsyncTask transferTask;
+//            TransferAsyncTask transferTask;
 
             for(String ipAddress : ipAddressList) {
 //                Log.d(TAG, "Start transferring to IP: " + ipAddress);
@@ -319,21 +320,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
 
-                    // //////delete a file if exists //////
-//                    File file = new File(fromPath);
-//                    if(file.exists()) {
-//                        Log.d(TAG, "file: " + file.getPath() + " exists");
-//                        if(file.delete()) {
-//                            Log.d(TAG, "file: " + file.getName() + " deleted");
-//                        }
-//                    }
                 }
             }
             createDialog(ERROR_MSG, ERROR_TYPE, "successfulTransferMsg");
 
             }
         }).start();
-
 
         updateImage();
     }
@@ -357,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
         dialogFragment.setArguments(args);
         dialogFragment.setCancelable(false);
         dialogFragment.show(getFragmentManager(), errorId);
+
     }
 
 
@@ -365,21 +358,21 @@ public class MainActivity extends AppCompatActivity {
      * hides keyboard on current page
      */
     private void hideKeyboard(View view) {
-        Log.d(TAG, "Hide soft KB" ) ;
-
+//        Log.d(TAG, "Hide soft KB" ) ;
         View viewCurrent = this.getCurrentFocus();
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         if ((view == null) && (viewCurrent != null)) {
             view = viewCurrent;
-        } else if(viewCurrent == null){ // exit if both views are null
-            Log.d(TAG, "VIEW IS NULL");
-            view = new View(this);
+        } else if (viewCurrent == null) { // exit if both views are null
+            view = new View(MainActivity.this);
         }
 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        // forces closing keyboard independent of the view
+        //imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
 
@@ -391,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//do not need it
+//  ////   do not need it at this point    /////////////////////////////////
     private class TransferAsyncTask extends AsyncTask<String, Void, String>{
 
         private String errorMessage;
@@ -450,68 +443,58 @@ public class MainActivity extends AppCompatActivity {
 
         JSch jsch = new JSch();
         Session session;
-//        try {
-            session = jsch.getSession(serverUser, ipAddress, 22);
-            session.setTimeout(5000);
+        // start try/catch if no throws <Exception>
+        session = jsch.getSession(serverUser, ipAddress, 22);
+        session.setTimeout(5000);
 
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.setPassword(serverPass);
-            session.connect();
-            Log.d(TAG, "Connected to " + ipAddress + "!");
+        session.setConfig("StrictHostKeyChecking", "no");
+        session.setPassword(serverPass);
+        session.connect();
+        Log.d(TAG, "Connected to " + ipAddress + "!");
 
-            Channel channel = session.openChannel("sftp");
-            channel.connect();
-            ChannelSftp channelSftp = (ChannelSftp) channel;
+        Channel channel = session.openChannel("sftp");
+        channel.connect();
+        ChannelSftp channelSftp = (ChannelSftp) channel;
 
-            SftpATTRS attrs;
+        SftpATTRS attrs;
 
-            //change current location to Vigore App /bin if exists or exist
-            try {
-                attrs = channelSftp.stat(to);
-                if(attrs.isDir()) {
-                    channelSftp.cd(to);
-                }
-            } catch (Exception e) {
-                Log.d(TAG, to +" not found! Exiting transfer...");
-                return;
+        //change current location to Vigore App /bin if exists or exist
+        try {
+            attrs = channelSftp.stat(to);
+            if(attrs.isDir()) {
+                channelSftp.cd(to);
             }
+        } catch (Exception e) {
+            Log.d(TAG, to +" not found! Exiting transfer...");
+            return;
+        }
 
-            String currentDirectory = channelSftp.pwd();
-            Log.d(TAG, "Current Dir on remote host: "+currentDirectory);
+        String currentDirectory = channelSftp.pwd();
+        Log.d(TAG, "Current Dir on remote host: "+currentDirectory);
 
-            String subDir = userName;
+        String subDir = userName;
 
-            // check if sub directory exists
-            try {
-                attrs = channelSftp.stat(currentDirectory+"/"+subDir);
-                // create a sub directory if needed
-                Log.d(TAG, "Directory \'"+subDir+"\' exists, IsDir="+attrs.isDir());
-            } catch (Exception e) {
-                Log.d(TAG, currentDirectory+"/"+subDir+" not found");
-                Log.d(TAG, "Creating dir "+subDir);
-                channelSftp.mkdir(subDir);
-            }
+        // check if sub directory exists
+        try {
+            attrs = channelSftp.stat(currentDirectory+"/"+subDir);
+            // create a sub directory if needed
+            Log.d(TAG, "Directory \'"+subDir+"\' exists, IsDir="+attrs.isDir());
+        } catch (Exception e) {
+            Log.d(TAG, currentDirectory+"/"+subDir+" not found");
+            Log.d(TAG, "Creating dir "+subDir);
+            channelSftp.mkdir(subDir);
+        }
 
-            //upload file using the same folder structure
-            String destinationPath = currentDirectory+"/"+subDir+"/"+fileName;
-            Log.d(TAG, "dest path: " + destinationPath);
-            channelSftp.put(file.getPath(), destinationPath); // src -> dst
+        //upload file using the same folder structure
+        String destinationPath = currentDirectory+"/"+subDir+"/"+fileName;
+        Log.d(TAG, "dest path: " + destinationPath);
+        channelSftp.put(file.getPath(), destinationPath); // src -> dst
 
-            channelSftp.exit();
-            session.disconnect();
+        channelSftp.exit();
+        session.disconnect();
 
-            ERROR_TYPE = Constants.TRANSFER_SUCCESS;
-//        }
+        ERROR_TYPE = Constants.TRANSFER_SUCCESS;
 
-//        catch (JSchException e) {
-//            ERROR_TYPE = Constants.CONNECTION_ERR;
-//            e.printStackTrace();
-//            Log.e(TAG, e.toString());
-//        } catch (SftpException e) {
-//            ERROR_TYPE = Constants.TIMEOUT_ERR;
-//            e.printStackTrace();
-//            Log.e(TAG, e.toString());
-//        }
     }
 
 
@@ -519,4 +502,14 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
+
+
+// //////delete a file if exists //////
+//                    File file = new File(fromPath);
+//                    if(file.exists()) {
+//                        Log.d(TAG, "file: " + file.getPath() + " exists");
+//                        if(file.delete()) {
+//                            Log.d(TAG, "file: " + file.getName() + " deleted");
+//                        }
+//                    }
 

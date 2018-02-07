@@ -57,6 +57,7 @@
     <string name="time_out_prompt">Please check connectivity</string>
     <string name="connection_err">Connection error</string>
     <string name="reenter_phone">Please enter phone number!</string>
+    <string name="complete_form">Please complete form: take a picture and sign waver!</string>
 
 
 </resources>
